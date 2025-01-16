@@ -1,0 +1,7 @@
+.env
+.streamlit/secrets.toml
+*.pyc
+
+test.py
+data/clubs.txt
+buider.py
