@@ -45,8 +45,8 @@ with scout_tab:
     grp1_ids = group_builder(1, grp1_cont, st.session_state['df_riders'])
     grp2_ids = group_builder(2, grp2_cont, st.session_state['df_riders'])
     
-    grp1_ids = [5083506, 4598636, 5879996, 5859202]
-    grp2_ids = [303296, 1315124, 1449064, 3815411]
+    #grp1_ids = [5083506, 4598636, 5879996, 5859202]
+    #grp2_ids = [303296, 1315124, 1449064, 3815411]
     
     update_rider_data(grp1_ids, grp2_ids)
 
