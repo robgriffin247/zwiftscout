@@ -47,6 +47,7 @@ with scout_tab:
     #grp1_ids = [5083506, 4598636, 5879996, 5859202]
     #grp2_ids = [303296, 1315124, 1449064, 3815411]
     
+    
     update_rider_data(grp1_ids, grp2_ids)
 
     # Display visuals only if 1+ riders are selected
