@@ -26,7 +26,6 @@ if 'df_riders' not in st.session_state:
         st.session_state['df_riders'] = con.sql('select * from core.riders').pl()
 
 
-
 scout_tab, add_tab = st.tabs(['Compare Riders', 'Add New Riders', ])
 
 
