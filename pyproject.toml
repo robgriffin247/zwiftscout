@@ -4,6 +4,10 @@ version = "0.1.0"
 description = ""
 authors = ["robgriffin247 <robgriffin247@hotmail.com>"]
 readme = "README.md"
+packages = [
+    { include = "zrapp" },
+]
+
 
 [tool.poetry.dependencies]
 python = ">=3.12,<3.13"
