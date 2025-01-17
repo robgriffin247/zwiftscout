@@ -21,7 +21,7 @@ def add_new_riders_to_session_data(ids_input, input_type, get_riders_button):
                 new_riders = unpack_riders(get_club_riders(ids))
             st.session_state['df_riders'] = pl.concat([st.session_state['df_riders'], new_riders]).sort(['rider_id', 'last_update']).unique(subset='rider_id', keep='last')
         except:
-            st.write(f'Please ensure your IDs are all valid {input_type.lower()} IDs and that IDs are all numeric values separated by commas, e.g. 1234, 4567, 8910')
+            st.write(f'Please ensure your IDs are all valid {input_type.lower()} IDs. Virtually any text input works here, as long as all numeric values are valid ID. For example "MMNKNENQWL313e;!MLM1123;MALSMD33" would fetch IDs 313, 1123 and 33. Check they are valid by finding the rider/club on zwiftpower or zwiftracing app. E.g. ID 4598636 looks like https://zwiftpower.com/profile.php?z=4598636')
 
 
 
