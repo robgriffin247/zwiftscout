@@ -8,7 +8,7 @@ def phenotypes_plot(selected_riders_data):
 
     fig_cont = st.container()
     
-    team_view = st.toggle('Show Team Averages', value=True, key='team_view_pheno')
+    team_view = st.toggle('Show Team Averages', value=False, key='team_view_pheno')
     
     source = selected_riders_data[['name', 'grp', 'rider_id', 'phenotype_sprinter', 
                                  'phenotype_puncheur', 'phenotype_pursuiter', 
@@ -54,7 +54,7 @@ def power_curves_plot(selected_riders_data):
 
     col1, col2, _= st.columns([5,4,8])
     with col1:
-        team_view = st.toggle('Show Team Averages', value=True, key='team_view_power')
+        team_view = st.toggle('Show Team Averages', value=False, key='team_view_power')
     with col2:
         wkg = st.toggle('W/kg', value=False, key='power_curve_wkg_toggle')
 
