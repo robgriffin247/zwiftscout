@@ -1,23 +1,27 @@
 import streamlit as st
-import duckdb
 import polars as pl
+import re
 from datetime import timedelta
 from datetime import datetime as dt
 
 from zrapp.endpoints import get_riders, get_club_riders
 from zrapp.helpers import unpack_riders, update_selected_riders
 
+def string_to_ids(id_string):
+        output = [int(i) for i in re.sub(r'\D+', ',', id_string).split(',') if i != '']
+        return output
+
 def add_new_riders_to_session_data(ids_input, input_type, get_riders_button):
     if len(ids_input)>0 and get_riders_button:
-            try:
-                ids = [int(id) for id in ids_input.replace(',', '').split(' ') if id!='']
-                if input_type=='Rider':
-                    new_riders = unpack_riders(get_riders(ids))
-                else:
-                    new_riders = unpack_riders(get_club_riders(ids))
-                st.session_state['df_riders'] = pl.concat([st.session_state['df_riders'], new_riders]).sort(['rider_id', 'last_update']).unique(subset='rider_id', keep='last')
-            except:
-                st.write(f'Please ensure your IDs are all valid {input_type.lower()} IDs and that IDs are all numeric values separated by commas, e.g. 1234, 4567, 8910')
+        try:
+            ids = string_to_ids(ids_input)
+            if input_type=='Rider':
+                new_riders = unpack_riders(get_riders(ids))
+            else:
+                new_riders = unpack_riders(get_club_riders(ids))
+            st.session_state['df_riders'] = pl.concat([st.session_state['df_riders'], new_riders]).sort(['rider_id', 'last_update']).unique(subset='rider_id', keep='last')
+        except:
+            st.write(f'Please ensure your IDs are all valid {input_type.lower()} IDs and that IDs are all numeric values separated by commas, e.g. 1234, 4567, 8910')
 
 
 
@@ -40,3 +44,5 @@ def update_rider_data(grp1_ids, grp2_ids):
                 st.write(f'{n_stale} rider has data >3 days old, feel free to refresh the data!')
             else:
                 st.write(f'{n_stale} riders have data >3 days old, feel free to refresh the data!')
+
+

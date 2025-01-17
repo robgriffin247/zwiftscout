@@ -5,7 +5,7 @@ from zrapp.helpers import unpack_riders
 with open('data/clubs.txt', 'r') as file:
     clubs = file.read().split('\n')
 
-data = get_club_riders(clubs)
+data = get_club_riders(clubs, toast=False)
 
 df = unpack_riders(data)
 

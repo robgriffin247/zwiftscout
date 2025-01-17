@@ -1,10 +1,11 @@
 import streamlit as st
 import polars as pl
+from ui.helpers import string_to_ids
 
 def group_builder(id, cont, data):
     with cont:
         
-        st.write(f'Group {id}')
+        st.write(f'Team {id}')
 
         st.multiselect('Club(s)',
                     key=f'grp{id}_clubs',
@@ -28,7 +29,8 @@ def get_add_ids_input():
     ids_input = st.text_input('IDs', 
                               key='ids_input',
                               placeholder='12345, 23456, 34567',
-                              help='Enter one or more IDs, separating IDs with a comma. Find ID numbers in the ZwiftPower and ZwiftRacing app URLs, e.g. 4598636 from https://zwiftpower.com/profile.php?z=4598636')
+                              help='Enter one or more IDs. Tip &mdash; you can enter numbers, zwiftpower and zwiftracing.app urls, anything as long as all numbers are valid IDs. Find ID numbers in the ZwiftPower and ZwiftRacing app URLs, e.g. https://zwiftpower.com/profile.php?z=4598636')
+    
     col1, col2, _ = st.columns([4,4,8], vertical_alignment='bottom')
     
     with col1:

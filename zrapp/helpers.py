@@ -1,10 +1,10 @@
 import polars as pl
 from datetime import datetime as dt
-from datetime import timezone
 import streamlit as st
 import duckdb
 from zrapp.endpoints import get_riders
 from datetime import timedelta
+import html
 
 def unpack_riders(data):
 
@@ -20,13 +20,13 @@ def unpack_riders(data):
                 
                 'last_update': rider['last_update'],
                 'rider_id': int(rider['riderId']) if 'riderId' in rider_keys else None,
-                'name': str(rider['name']) if 'riderId' in rider_keys and 'name' in rider_keys else None,
+                'name': html.unescape(str(rider['name'])) if 'riderId' in rider_keys and 'name' in rider_keys else None,
                 'rider': (f"[{str(rider['riderId'])}] {str(rider['name']).strip()}") if 'name' in rider_keys else None,
                 'gender': str(rider['gender']) if 'gender' in rider_keys else None,
                 'weight': float(rider['weight']) if 'weight' in rider_keys and float(rider['weight'])>0 else None,
                 
                 'club_id': int(rider['club']['id']) if 'club' in rider_keys and 'id' in rider['club'].keys() else None,
-                'club': str(rider['club']['name']) if 'club' in rider_keys and 'name' in rider['club'].keys() else None,
+                'club': html.unescape(str(rider['club']['name'])) if 'club' in rider_keys and 'name' in rider['club'].keys() else None,
             
                 'watts_5': float(rider['power']['w5']) if 'power' in rider_keys and 'w5' in rider['power'].keys() and rider['power']['w5'] is not None else None,
                 'watts_15': float(rider['power']['w15']) if 'power' in rider_keys and 'w15' in rider['power'].keys() and rider['power']['w15'] is not None else None,

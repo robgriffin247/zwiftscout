@@ -3,7 +3,7 @@ import streamlit as st
 from datetime import datetime as dt
 
 # TODO: modify this to use the POST (need to figure out data payload)
-def get_riders(ids):
+def get_riders(ids, toast=True):
 
     if isinstance(ids, int):
         ids = [ids]
@@ -24,13 +24,39 @@ def get_riders(ids):
 
         riders.append(rider)
 
+    if toast and len(ids)==1:
+        st.toast('Added rider!')
+    elif toast and len(ids)>1:
+        st.toast(f'Added {len(ids)} riders!')
+    else:
+        pass
+
     return riders
 
 
-def get_club_riders(ids):
+def xget_riders(ids):
 
     if isinstance(ids, int):
         ids = [ids]
+    
+    header = {'Authorization':st.secrets['api']['key']}
+
+    url = f'https://zwift-ranking.herokuapp.com/public/riders'
+
+    response = httpx.post(url, 
+                          data=ids,
+                          headers=header, 
+                          timeout=30)
+    response.raise_for_status()
+
+    return response.json()
+
+
+def get_club_riders(ids, toast=True):
+
+    if isinstance(ids, int):
+        ids = [ids]
+
 
     def get_club(id):
         header = {'Authorization':st.secrets['api']['key']}
@@ -55,7 +81,8 @@ def get_club_riders(ids):
 
     i = 0
     
-    msg = st.toast('Loading Riders...')
+    if toast:
+        msg = st.toast('Loading Riders...')
 
     for id in ids:
     
@@ -75,6 +102,10 @@ def get_club_riders(ids):
             rider['last_update'] = data['date']
             riders.append(rider)
 
-        msg.toast(f'Loaded {i} of {len(ids)} clubs - {len(riders)} riders loaded!')
+        if toast:
+            msg = st.empty()
+            msg.toast(f'Loaded {i} of {len(ids)} clubs - {len(riders)} riders loaded!')
+        else:
+            print(f'Loaded {i} of {len(ids)} clubs - {len(riders)} riders loaded!')
 
     return riders
