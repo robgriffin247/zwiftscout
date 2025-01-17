@@ -43,8 +43,6 @@ with scout_tab:
     grp1_cont, grp2_cont = st.columns(2, border=True)
     grp1_ids = group_builder(1, grp1_cont, st.session_state['df_riders'])
     grp2_ids = group_builder(2, grp2_cont, st.session_state['df_riders'])
-    
-
     update_rider_data(grp1_ids, grp2_ids)
 
     # Display visuals only if 1+ riders are selected
