@@ -44,7 +44,7 @@ def unpack_riders(data):
                 'wkg_120': float(rider['power']['wkg120']) if 'power' in rider_keys and 'wkg120' in rider['power'].keys() and rider['power']['wkg120'] is not None else None,
                 'wkg_300': float(rider['power']['wkg300']) if 'power' in rider_keys and 'wkg300' in rider['power'].keys() and rider['power']['wkg300'] is not None else None,
                 'wkg_1200': float(rider['power']['wkg1200']) if 'power' in rider_keys and 'wkg1200' in rider['power'].keys() and rider['power']['wkg1200'] is not None else None,
-                'wkg_ftp': float(rider['zpFTP']) if 'zpFTP' in rider_keys and rider['zpFTP'] is not None else None,
+                'wkg_ftp': float(rider['zpFTP'])/float(rider['weight']) if  'weight' in rider_keys and float(rider['weight'])>0 and 'zpFTP' in rider_keys and rider['zpFTP'] is not None else None,
 
                 'velo': float(rider['race']['current']['rating']) if 'race' in rider_keys and 'current' in rider['race'].keys() and 'rating' in rider['race']['current'].keys() else None,
                 'velo_category': str(rider['race']['current']['mixed']['category']) if 'race' in rider_keys and 'current' in rider['race'].keys() and 'mixed' in rider['race']['current'].keys() and 'category' in rider['race']['current']['mixed'].keys() else None,
@@ -76,8 +76,9 @@ def update_selected_riders(grp1, grp2):
         updated_riders = unpack_riders(get_riders(stale_riders))
         st.session_state['df_riders'] = pl.concat([
             st.session_state['df_riders'],
-            updated_riders,
-            ]).sort(['rider_id', 'last_update'])
+            updated_riders],
+            how='diagonal'
+            ).sort(['rider_id', 'last_update'])
         
     st.session_state['df_riders'] = st.session_state['df_riders'].unique(subset='rider_id', keep='last')
          
