@@ -23,7 +23,8 @@ if 'df_riders' not in st.session_state:
     
     # Load to session
     with duckdb.connect('data/zrapp.duckdb') as con:
-        st.session_state['df_riders'] = con.sql('select * replace(wkg_ftp/weight as wkg_ftp) from core.riders').pl()
+        #st.session_state['df_riders'] = con.sql('select * replace(watts_ftp/weight as wkg_ftp) from core.riders').pl()
+        st.session_state['df_riders'] = con.sql('select * from core.riders').pl()
 
 
 scout_tab, add_tab = st.tabs(['Compare Riders', 'Add New Riders', ])
@@ -35,7 +36,8 @@ with add_tab:
     add_new_riders_to_session_data(ids_input, input_type, get_riders_button)
     with duckdb.connect('data/zrapp.duckdb') as con:
         data = st.session_state['df_riders']
-        con.sql(f'create or replace table core.riders as select * replace(wkg_ftp/weight as wkg_ftp) from data')
+        #con.sql(f'create or replace table core.riders as select * replace(watts_ftp/weight as wkg_ftp) from data')
+        con.sql(f'create or replace table core.riders as select * from data')
 
 
 with scout_tab:
