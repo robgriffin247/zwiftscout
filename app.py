@@ -59,3 +59,5 @@ with scout_tab:
         phenotypes_plot(df_selected_riders)
         power_curves_plot(df_selected_riders)
 
+
+
