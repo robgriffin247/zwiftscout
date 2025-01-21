@@ -21,7 +21,7 @@ def group_builder(id, cont, data):
         if bulk:
             grp_riders = riders_select.text_input('Rider IDs',
                                                   key=f'grp{id}_riders',
-                                                  help='Paste IDs - you can paste ids or URLs, pretty much anything, as long as all numbers are IDs and they is something - a space, a comma, a letter... whatever - between the IDs! e.g. 1234jnaskjd5678 will load 1234 and 5678')
+                                                  help='Paste IDs - you can paste ids or URLs, pretty much anything, as long as all numbers are IDs and there is something - a space, a comma, a letter... whatever - between the IDs! e.g. 1234jnaskjd5678 will load 1234 and 5678')
             grp_ids = string_to_ids(grp_riders)
 
         else:
