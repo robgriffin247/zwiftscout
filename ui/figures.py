@@ -8,7 +8,17 @@ def phenotypes_plot(selected_riders_data):
 
     fig_cont = st.container()
     
-    team_view = st.toggle('Show Team Averages', value=False, key='team_view_pheno')
+    
+    col1, col2, _ = st.columns([4,3,6])
+    with col1:
+        team_view = st.toggle('Show Team Averages', value=False, key='team_view_pheno')
+    with col2:
+        split_view = st.toggle('Split Teams', value=False, key='split_view_pheno')
+    
+    if split_view:
+        fcol='grp'
+    else:
+        fcol=None
     
     source = selected_riders_data[['name', 'grp', 'rider_id', 'phenotype_sprinter', 
                                  'phenotype_puncheur', 'phenotype_pursuiter', 
@@ -17,9 +27,9 @@ def phenotypes_plot(selected_riders_data):
     rotated = source.unpivot(index=['rider_id', 'name', 'grp'])
 
 
-    fig = px.line(rotated, 
-                  x='variable', y='value', color='name', line_dash='grp',
-                  markers=True, labels={'name':'Rider', 'grp':'Selected Team'})
+    fig = px.line(rotated, title=f'Phenotypes', 
+                  x='variable', y='value', color='name', line_dash='grp', facet_col=fcol,
+                  markers=True, labels={'name':'Rider', 'grp':'Selected Team', 'variable':''})
     
     fig.layout.legend.title.text='Rider'
     
@@ -31,16 +41,20 @@ def phenotypes_plot(selected_riders_data):
         fig.update_traces(line=dict(color='rgba(150, 150, 150, 0.5)', width=0.5))
         fig.update_layout(showlegend=False)
         fig.add_traces(px.line(rotated_grp,
+                               facet_col=fcol,
                                x='variable', y='value', line_dash='grp', color='grp',
                                markers=True, labels={'grp':'Selected Team'}).data)
     
 
     fig.update_layout(xaxis_title=None, yaxis_title=None,
                       legend={'orientation':'h', 'yanchor':'top', 'xanchor':'left', 'x':0, 'y':-0.16})
+    
+    fig.update_traces(hovertemplate=None)
+    fig.update_layout(hovermode='x unified', hoverlabel=dict(font_size=10), height=600)
 
     fig.update_xaxes(
         tickvals=[0,1,2,3,4],
-        ticktext=['Sprinter', 'Puncheur', 'Pursuiter', 'Climber', 'Time-Trialist']
+        ticktext=['Sprinter', 'Puncheur', 'Pursuiter', 'Climber', 'TT']
         )
 
     fig_cont.plotly_chart(fig)
@@ -52,11 +66,18 @@ def power_curves_plot(selected_riders_data):
     
     fig_cont = st.container()
 
-    col1, col2, _= st.columns([5,4,8])
+    col1, col2, col3, _ = st.columns([4,3,3,3])
     with col1:
         team_view = st.toggle('Show Team Averages', value=False, key='team_view_power')
     with col2:
+        split_view = st.toggle('Split Teams', value=False, key='split_view_power')
+    with col3:
         wkg = st.toggle('W/kg', value=False, key='power_curve_wkg_toggle')
+
+    if split_view:
+        fcol='grp'
+    else:
+        fcol=None
 
     if wkg:
         source = selected_riders_data[['grp', 'name', 'rider_id', 
@@ -75,17 +96,9 @@ def power_curves_plot(selected_riders_data):
     rotated = rotated.with_columns(log_time=pl.col('time').log(base=2))
 
 
-
-    fig = px.line(rotated, title=f'Power Curves{title_suffix}', x='log_time', y='value', color='name', line_dash='grp', markers=True,
-                  labels={
-                      'name':'Rider',
-                      'grp':'Selected Team'
-                  })
-
-
-    fig = px.line(rotated, 
+    fig = px.line(rotated, title=f'Power Curves{title_suffix}', facet_col=fcol,
                   x='log_time', y='value', color='name', line_dash='grp',
-                  markers=True, labels={'name':'Rider', 'grp':'Selected Team'})
+                  markers=True, labels={'name':'Rider', 'grp':'Selected Team', 'log_time':''})
     
     fig.layout.legend.title.text='Rider'
     
@@ -100,7 +113,7 @@ def power_curves_plot(selected_riders_data):
         fig.update_traces(line=dict(color='rgba(150, 150, 150, 0.5)', width=0.5))
         fig.update_layout(showlegend=False)
 
-        fig.add_traces(px.line(rotated_grp,
+        fig.add_traces(px.line(rotated_grp, facet_col=fcol,
                                x='log_time', y='value', line_dash='grp', color='grp',
                                markers=True, labels={'grp':'Selected Team'}).data)
     
@@ -109,6 +122,9 @@ def power_curves_plot(selected_riders_data):
 
     fig.update_layout(xaxis_title=None, yaxis_title=None,
                       legend={'orientation':'h', 'yanchor':'top', 'xanchor':'left', 'x':0, 'y':-0.16})
+    
+    fig.update_traces(hovertemplate=None)
+    fig.update_layout(hovermode='x unified', hoverlabel=dict(font_size=10), height=600)
 
     fig.update_xaxes(
         tickvals=[math.log2(i) for i in [5,15,30,60,120,300,1200]],

@@ -1,4 +1,5 @@
 import streamlit as st
+import pandas as pd
 
 def rider_table(selected_riders_data):
     
@@ -15,22 +16,28 @@ def rider_table(selected_riders_data):
         source = selected_riders_data[['grp', 'name', 'velo', 'phenotype_value',
                                        'weight', 'watts_5', 'watts_60', 'watts_300', 'watts_ftp',]]
 
-    table_cont.dataframe(source,
+
+    styled_df = pd.DataFrame(source, columns=source.columns).style.background_gradient(
+        axis=None, cmap='YlOrRd', 
+        subset=[i for i in source.columns if 'watts' in i or 'wkg' in i],)
+    
+    table_cont.dataframe(styled_df,
                  use_container_width=True,
-        column_config={
-            'grp':st.column_config.TextColumn('Team'),
-            'name':st.column_config.TextColumn('Rider'),
-            'weight':st.column_config.NumberColumn('kg', format='%.1f'),
-            'phenotype_value':st.column_config.TextColumn('Phenotype'),
-            'velo':st.column_config.NumberColumn('vELO', format='%.0f'),
-            'velo_90':st.column_config.NumberColumn('vELO (90)', format='%.0f'),
-            'watts_5':st.column_config.NumberColumn('5s Power', format='%.0f'),
-            'wkg_5':st.column_config.NumberColumn('5s Power', format='%.2f'),
-            'watts_60':st.column_config.NumberColumn('1m Power', format='%.0f'),
-            'wkg_60':st.column_config.NumberColumn('1m Power', format='%.2f'),
-            'watts_300':st.column_config.NumberColumn('5m Power', format='%.0f'),
-            'wkg_300':st.column_config.NumberColumn('5m Power', format='%.2f'),
-            'watts_ftp':st.column_config.NumberColumn('FTP', format='%.0f'),
-            'wkg_ftp':st.column_config.NumberColumn('FTP', format='%.2f'),
-        }
-    )
+                 hide_index=True,
+                 column_config={
+                     'grp':st.column_config.TextColumn('Team'),
+                     'name':st.column_config.TextColumn('Rider'),
+                     'weight':st.column_config.NumberColumn('kg', format='%.1f'),
+                     'phenotype_value':st.column_config.TextColumn('Phenotype'),
+                     'velo':st.column_config.NumberColumn('vELO', format='%.0f'),
+                     'velo_90':st.column_config.NumberColumn('vELO (90)', format='%.0f'),
+                     'watts_5':st.column_config.NumberColumn('5s Power', format='%.0f'),
+                     'wkg_5':st.column_config.NumberColumn('5s Power', format='%.2f'),
+                     'watts_60':st.column_config.NumberColumn('1m Power', format='%.0f'),
+                     'wkg_60':st.column_config.NumberColumn('1m Power', format='%.2f'),
+                     'watts_300':st.column_config.NumberColumn('5m Power', format='%.0f'),
+                     'wkg_300':st.column_config.NumberColumn('5m Power', format='%.2f'),
+                     'watts_ftp':st.column_config.NumberColumn('FTP', format='%.0f'),
+                     'wkg_ftp':st.column_config.NumberColumn('FTP', format='%.2f'),
+                     })
+    

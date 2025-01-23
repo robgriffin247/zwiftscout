@@ -3,6 +3,9 @@ import polars as pl
 import duckdb
 import os
 
+from datetime import datetime as dt
+import plotly.express as px
+
 from zrapp.endpoints import get_club_riders
 from zrapp.helpers import unpack_riders
 from ui.inputs import group_builder, get_add_ids_input
@@ -49,15 +52,13 @@ with scout_tab:
 
     # Display visuals only if 1+ riders are selected
     if len(grp1_ids+grp2_ids)>0:
+
         df_selected_riders = pl.concat([
             st.session_state['df_riders'].filter(pl.col('rider_id').is_in(grp1_ids)).with_columns(grp=1),
             st.session_state['df_riders'].filter(pl.col('rider_id').is_in(grp2_ids)).with_columns(grp=2),
         ])
 
-        #st.dataframe(df_selected_riders)
         rider_table(df_selected_riders)
         phenotypes_plot(df_selected_riders)
         power_curves_plot(df_selected_riders)
-
-
 
