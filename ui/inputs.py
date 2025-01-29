@@ -60,26 +60,3 @@ def get_add_ids_input():
 
     return ids_input, input_type, get_riders_button
     
-"""
-def group_builder(id, cont, data):
-    with cont:
-        
-        st.write(f'Team {id}')
-
-        st.multiselect('Club(s)',
-                    key=f'grp{id}_clubs',
-                    options=data['club'].unique().sort())
-
-        grp_rider_choices = data.filter((pl.col('club').is_in(st.session_state[f'grp{id}_clubs']) if (f'grp{id}_clubs' in st.session_state and len(st.session_state[f'grp{id}_clubs'])>0) else True) |
-                                                            (pl.col('rider').is_in(st.session_state[f'grp{id}_riders']) if (f'grp{id}_riders' in st.session_state and len(st.session_state[f'grp{id}_riders'])>0) else False))['rider']
-
-        grp_riders = st.multiselect('Rider(s)', 
-                                    max_selections=10,
-                                    key=f'grp{id}_riders', 
-                                    options=grp_rider_choices,
-                                    default=st.session_state[f'grp{id}_riders'] if (f'grp{id}_riders' in st.session_state) else None)
-
-        grp_ids = [int(i.split(']')[0].split('[')[1]) for i in grp_riders]
-    
-    return grp_ids
-"""

@@ -1,28 +1,29 @@
 import httpx
 import streamlit as st
 from datetime import datetime as dt
+import json
 
-# TODO: modify this to use the POST (need to figure out data payload)
+
 def get_riders(ids, toast=True):
-
+    
     if isinstance(ids, int):
         ids = [ids]
     
     header = {'Authorization':st.secrets['api']['key']}
+    url = f'https://zwift-ranking.herokuapp.com/public/riders/'
 
-    riders = []
-    
-    for id in ids:
-        url = f'https://zwift-ranking.herokuapp.com/public/riders/{id}'
+    response = httpx.post(url,
+                          headers=header, 
+                          json=ids, 
+                          timeout=30)
+    response.raise_for_status()
 
-        response = httpx.get(url, headers=header, timeout=30)
-        response.raise_for_status()
+    content = response.content
+    decoded = content.decode(encoding='utf-8')
+    riders = json.loads(decoded)
 
-        rider = response.json()
-        #rider['last_update'] = response.headers['date']
+    for rider in riders:
         rider['last_update'] = dt.now()
-
-        riders.append(rider)
 
     if toast and len(ids)==1:
         st.toast('Added rider!')
@@ -32,24 +33,6 @@ def get_riders(ids, toast=True):
         pass
 
     return riders
-
-
-def xget_riders(ids):
-
-    if isinstance(ids, int):
-        ids = [ids]
-    
-    header = {'Authorization':st.secrets['api']['key']}
-
-    url = f'https://zwift-ranking.herokuapp.com/public/riders'
-
-    response = httpx.post(url, 
-                          data=ids,
-                          headers=header, 
-                          timeout=30)
-    response.raise_for_status()
-
-    return response.json()
 
 
 def get_club_riders(ids, toast=True):
