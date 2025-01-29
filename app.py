@@ -1,19 +1,14 @@
 import streamlit as st
-import polars as pl
 import duckdb
 import os
 
-from datetime import datetime as dt
-import plotly.express as px
-
 from zrapp.endpoints import get_club_riders
 from zrapp.helpers import unpack_riders
-from ui.inputs import group_builder, get_add_ids_input
-from ui.helpers import add_new_riders_to_session_data, update_rider_data
-from ui.figures import phenotypes_plot, power_curves_plot
-from ui.tables import rider_table
 
-st.set_page_config(page_title='ZwiftScout', page_icon=':bike:', layout='centered', )
+st.set_page_config(page_title='ZwiftScout', 
+                   page_icon=':bike:', 
+                   layout='centered',
+                   initial_sidebar_state='collapsed')
 
 # Set up data for session 
 if 'df_riders' not in st.session_state:
@@ -26,41 +21,17 @@ if 'df_riders' not in st.session_state:
     
     # Load to session
     with duckdb.connect('data/zrapp.duckdb') as con:
-        #st.session_state['df_riders'] = con.sql('select * replace(watts_ftp/weight as wkg_ftp) from core.riders').pl()
         st.session_state['df_riders'] = con.sql('select * from core.riders').pl()
 
 
-scout_tab, add_tab = st.tabs(['Compare Riders', 'Add New Riders', ])
+
+pg = st.navigation([
+    st.Page('zs_pages/scout.py', title='Scout', icon=':material/person_search:'),
+    st.Page('zs_pages/about.py', title='About', icon=':material/info:'),
+    ])
+pg.run()
 
 
-with add_tab:
-    # Allow users to add missing riders or teams
-    ids_input, input_type, get_riders_button = get_add_ids_input()
-    add_new_riders_to_session_data(ids_input, input_type, get_riders_button)
-    with duckdb.connect('data/zrapp.duckdb') as con:
-        data = st.session_state['df_riders']
-        #con.sql(f'create or replace table core.riders as select * replace(watts_ftp/weight as wkg_ftp) from data')
-        con.sql(f'create or replace table core.riders as select * from data')
-
-
-with scout_tab:
-    # Allow users to choose focal riders
-    grp1_cont, grp2_cont = st.columns(2, border=True)
-    grp1_ids = group_builder(1, grp1_cont, st.session_state['df_riders'])
-    grp2_ids = group_builder(2, grp2_cont, st.session_state['df_riders'])
-    update_rider_data(grp1_ids, grp2_ids)
-
-    # Display visuals only if 1+ riders are selected
-    if len(grp1_ids+grp2_ids)>0:
-
-        df_selected_riders = pl.concat([
-            st.session_state['df_riders'].filter(pl.col('rider_id').is_in(grp1_ids)).with_columns(grp=1),
-            st.session_state['df_riders'].filter(pl.col('rider_id').is_in(grp2_ids)).with_columns(grp=2),
-        ])
-
-        rider_table(df_selected_riders)
-        phenotypes_plot(df_selected_riders)
-        power_curves_plot(df_selected_riders)
 
 
 
