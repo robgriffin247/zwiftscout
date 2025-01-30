@@ -9,7 +9,7 @@ def get_riders(ids, toast=True):
     if isinstance(ids, int):
         ids = [ids]
     
-    header = {'Authorization':st.secrets['api']['key']}
+    header = {'Authorization':st.secrets['zrapp_api']['key']}
     url = f'https://zwift-ranking.herokuapp.com/public/riders/'
 
     response = httpx.post(url,
@@ -42,7 +42,7 @@ def get_club_riders(ids, toast=True):
 
 
     def get_club(id):
-        header = {'Authorization':st.secrets['api']['key']}
+        header = {'Authorization':st.secrets['zrapp_api']['key']}
         url = f'https://zwift-ranking.herokuapp.com/public/clubs/{id}'
 
         response = httpx.get(url, headers=header, timeout=30)
@@ -52,7 +52,7 @@ def get_club_riders(ids, toast=True):
 
 
     def get_club_from_rider(club, rider):
-        header = {'Authorization':st.secrets['api']['key']}
+        header = {'Authorization':st.secrets['zrapp_api']['key']}
         url = f'https://zwift-ranking.herokuapp.com/public/clubs/{club}/{rider}'
 
         response = httpx.get(url, headers=header, timeout=30)
